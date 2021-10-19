@@ -1,4 +1,4 @@
-#Juan Arce, Corsta Rica.
+#Juan Arce, Costa Rica.
 #https://arcecostarica.wordpress.com/
 
 import turtle
