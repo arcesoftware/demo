@@ -1,0 +1,41 @@
+
+<html>
+    <head>
+        <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+var cat = document.createElement('div');
+cat.style.position = 'absolute';
+cat.style.top = '50%';
+cat.style.left = '50%';
+cat.style.transform = 'translate(-50%, -50%)';
+
+var catImage = document.createElement('img');
+catImage.src = 'https://bit.ly/3fsc0rH';
+catImage.style.width = '100px';
+catImage.style.height = '100px';
+catImage.style.borderRadius = '50%';
+cat.appendChild(catImage);
+
+var catName = document.createElement('h1');
+catName.innerHTML = 'Mr. Whiskers';
+cat.appendChild(catName);
+
+var catBio = document.createElement('p');
+catBio.innerHTML = 'I am a lawyer. I like to eat tuna and play with my toys. I like to sleep on your keyboard.';
+cat.appendChild(catBio);
+
+var catPhone = document.createElement('p');
+catPhone.innerHTML = '555-555-5555';
+cat.appendChild(catPhone);
+
+document.body.appendChild(cat);
+});
+        </script>
+    </head>
+    <body style="margin: 0;">
+        <div style="background-color: black; position: fixed; bottom: 0; width: 100%; height: 20px; padding: 20px; opacity: .85; z-index: 1000;">
+            </div>
+        </div>
+    </body>
+</html>
