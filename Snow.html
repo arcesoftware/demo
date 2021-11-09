@@ -1,0 +1,49 @@
+
+<html>
+    <head>
+        <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+var canvas = document.createElement('canvas');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+document.body.appendChild(canvas);
+var ctx = canvas.getContext('2d');
+ctx.fillStyle = 'black';
+ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+var snowflakes = [];
+for (var i = 0; i < 100; i++) {
+  snowflakes.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    r: Math.random() * 2 + 1,
+    d: Math.random() * 10 + 5
+  });
+}
+
+function draw() {
+  ctx.fillStyle = 'black';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = 'white';
+  for (var i = 0; i < snowflakes.length; i++) {
+    var snowflake = snowflakes[i];
+    ctx.beginPath();
+    ctx.arc(snowflake.x, snowflake.y, snowflake.r, 0, Math.PI * 2, true);
+    ctx.fill();
+    snowflake.y += snowflake.d;
+    if (snowflake.y > canvas.height) {
+      snowflake.y = -snowflake.r;
+      snowflake.x = Math.random() * canvas.width;
+    }
+  }
+  window.requestAnimationFrame(draw);
+}
+draw();
+});
+        </script>
+    </head>
+    <body style="margin: 0;">
+        <div style="background-color: black; position: fixed; bottom: 0; width: 100%; height: 20px; padding: 20px; opacity: .85; z-index: 1000;">
+    </body>
+</html>
