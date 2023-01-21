@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Barnsley Fern Generator</title>
+</head>
+<style>
+  #viewer {
+    background-color: #070400;
+    border: 1px solid rgb(0, 0, 0);
+    background-color: black;
+    border-radius: 4px;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  body {
+    background-color: black;
+  }
+  h1 {
+    text-align: center;
+    color:white;
+  }
+  #logo {
+  position: absolute;
+  top: -29px;
+  right: 1030px;
+  width: 300px;
+  height: 300px;
+}
+
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const canvas = document.querySelector('#viewer');
+    canvas.height = 700, canvas.width = 700;
+    const ctx = canvas.getContext('2d');
+    document.querySelector("#viewer").style.backgroundColor = "black";
+    // const iteration = 99999;
+    window.requestAnimationFrame(() => draw(0, 0));
+  });
+  const draw = (initX, initY) => {
+    const canvas = document.querySelector('#viewer');
+    const ctx = canvas.getContext('2d');
+
+    const rand = Math.random();
+    const [x, y] = (rand <= 0.01) ? f1(initX, initY) :
+      (rand <= 0.86) ? f2(initX, initY) :
+        (rand <= 0.86 + 0.07) ? f3(initX, initY) :
+          f4(initX, initY);
+
+    //Calculate distance from the origin
+    const distance = Math.sqrt(x*x + y*y);
+    //Calculate color based on distance from the origin
+    const color = `rgb(${Math.min(255, Math.max(0, 255 * (1 - distance / 1000)))}, ${Math.min(255, Math.max(0, 255 * (distance / 1000)))}, ${Math.floor(Math.random() * 256)})`;
+    ctx.fillStyle = color;
+
+    // Render Generated Point
+    ctx.beginPath();
+
+    ctx.fillRect(x * 110 + canvas.width / 2, canvas.height - y * 70, 3.14156, 3.14156);
+
+    window.requestAnimationFrame(() => draw(x, y));
+
+  }
+
+
+  // Affine Transformation
+  const f1 = (x, y) => [0, 0.16 * y];    // Stem. Call 1% of time
+  const f2 = (x, y) => [0.85 * x + 0.04 * y, -0.04 * x + 0.85 * y + 1.6];  // Successively smaller leaflets. Call 85% of time
+  const f3 = (x, y) => [0.2 * x - 0.26 * y, 0.23 * x + 0.22 * y + 1.6];   // Largest left-hand leaflet. Call 7% of time
+  const f4 = (x, y) => [-0.15 * x + 0.28 * y, 0.26 * x + 0.24 * y + 0.44];  // Largest right-hand leaflet. Call 7% of time
+</script>
+
+<body>
+  <h1><a href="https://en.wikipedia.org/wiki/Barnsley_fern" style="color:white; text-decoration: none;">Barnsley Fern</a></h1>
+  <canvas id="viewer"></canvas>
+  <a href="https://www.youtube.com/@richcoast">
+    <img id="logo" src="https://64.media.tumblr.com/821a6e9a40e6021c77288cd0fd1cfd39/278ebf14bb3d8b41-78/s540x810/9d00e6939f5aef9eb5e64a17f8fb56eef498876c.png">
+</a>
+</body>
+
+</html>
