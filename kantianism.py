@@ -18,17 +18,6 @@ def fib_sum(n):
 n = 1000
 total_sum = fib_sum(n)
 
-
-# Python 3: Fibonacci series up to n
-def fib(n):
-    a, b = 0, 1
-    while a < n:
-        print(a, end=' ')
-        a, b = b, a+b
-
-
-
-
 def multiply_by_constant(matrix, constant):
     # Check if the constant is not zero
     if constant != 0:
