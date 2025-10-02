@@ -118,4 +118,146 @@ def generate_julia_3d_cuda(grid_size, iter_limit, c, bounds, min_iter=MIN_ITER):
 
     # build point list on host (safe)
     points = []
-    step = (bounds
+    step = (bounds[1] - bounds[0]) / grid_size
+    idx = 0
+    for i in range(grid_size):
+        x = bounds[0] + i * step
+        for j in range(grid_size):
+            y = bounds[0] + j * step
+            for k in range(grid_size):
+                it = int(iters_host[idx])
+                if (it > min_iter) and (it < iter_limit):
+                    z = bounds[0] + k * step
+                    points.append((x, y, z, it))
+                idx += 1
+
+    return points
+
+
+# ===== OpenGL helpers (unchanged) =====
+def init_opengl(width, height):
+    glEnable(GL_BLEND)
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE)
+    glEnable(GL_PROGRAM_POINT_SIZE)
+    glEnable(GL_POINT_SMOOTH)
+    glPointSize(2)
+    glClearColor(0.0, 0.0, 0.0, 1.0)
+    glEnable(GL_DEPTH_TEST)
+
+    glMatrixMode(GL_PROJECTION)
+    glLoadIdentity()
+    gluPerspective(45, width / height, 0.1, 100.0)
+    glMatrixMode(GL_MODELVIEW)
+
+
+def render_points(points, max_iter):
+    glBegin(GL_POINTS)
+    for x, y, z, it in points:
+        norm = it / max_iter
+        glColor4f(norm, 0.4, 1.0 - norm, 0.05 + norm * 0.5)
+        glVertex3f(x, y, z)
+    glEnd()
+
+
+# ===== Integration example: animate iteration growth using CUDA generator =====
+def main():
+    global cam_dist, rot_x, rot_y, rot_z, pan_x, pan_y
+
+    # small GRID for interactive demo — increase only if your GPU & time allow
+    grid_size = GRID_SIZE
+    max_iter = MAX_ITER
+
+    pygame.init()
+    screen = pygame.display.set_mode((WIDTH, HEIGHT), DOUBLEBUF | OPENGL)
+    pygame.display.set_caption("3D Julia Set (CUDA accelerated)")
+
+    init_opengl(WIDTH, HEIGHT)
+    clock = pygame.time.Clock()
+
+    dragging = False
+    last_mouse_pos = None
+
+    frame = 0
+    current_iter = 2
+    anim_done = False
+    points = []
+
+    # pre-warm CUDA context once to avoid surprises
+    if cuda.is_available():
+        _ = cuda.current_context()  # will create context early (safer)
+
+    running = True
+    while running:
+        dt = clock.tick(30)
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                running = False
+            elif event.type == MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    dragging = True
+                    last_mouse_pos = pygame.mouse.get_pos()
+                elif event.button == 4:
+                    cam_dist -= ZOOM_SENSITIVITY
+                elif event.button == 5:
+                    cam_dist += ZOOM_SENSITIVITY
+            elif event.type == MOUSEBUTTONUP:
+                if event.button == 1:
+                    dragging = False
+            elif event.type == MOUSEMOTION and dragging:
+                x, y = pygame.mouse.get_pos()
+                dx = x - last_mouse_pos[0]
+                dy = y - last_mouse_pos[1]
+                rot_y += dx * ROTATE_SENSITIVITY
+                rot_x += dy * ROTATE_SENSITIVITY
+                last_mouse_pos = (x, y)
+
+        keys = pygame.key.get_pressed()
+        if keys[K_w]:
+            pan_y += PAN_SENSITIVITY
+        if keys[K_s]:
+            pan_y -= PAN_SENSITIVITY
+        if keys[K_a]:
+            pan_x -= PAN_SENSITIVITY
+        if keys[K_d]:
+            pan_x += PAN_SENSITIVITY
+        if keys[K_q]:
+            rot_z += ROTATE_SENSITIVITY
+        if keys[K_e]:
+            rot_z -= ROTATE_SENSITIVITY
+        if keys[K_r]:
+            cam_dist = 6.0
+            rot_x = rot_y = rot_z = 0
+            pan_x = pan_y = 0
+            current_iter = 2
+            anim_done = False
+
+        # ==== update points using CUDA every few frames to animate growth ====
+        if (not anim_done) and (frame % 4 == 0):
+            try:
+                points = generate_julia_3d_cuda(grid_size, current_iter, C, BOUNDS, MIN_ITER)
+            except Exception as e:
+                print("CUDA generation failed:", e)
+                print("Falling back to empty point set for this frame.")
+                points = []
+            current_iter += 1
+            if current_iter > max_iter:
+                current_iter = max_iter
+                anim_done = True
+
+        # ==== render ====
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+        glLoadIdentity()
+        glTranslatef(pan_x, pan_y, -cam_dist)
+        glRotatef(rot_x, 1, 0, 0)
+        glRotatef(rot_y, 0, 1, 0)
+        glRotatef(rot_z, 0, 0, 1)
+
+        render_points(points, max_iter)
+        pygame.display.flip()
+        frame += 1
+
+    pygame.quit()
+
+
+if __name__ == "__main__":
+    main()
