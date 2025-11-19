@@ -16,6 +16,7 @@ GUITAR_RHYTHM: note("<e2 d2 c2 g2>@4")
 // --- 🎹 LEAD SYNTH (Iconic Riff - Clearer Tone) ---
 // The main melody, carefully filtered for clarity.
 LEAD: note("e4@8 g4@8 f4@8 e4@8 c4@8 d4@8 e4@8")
+  .struct("x*8")
   .sustain(0.25)
   .sound("gm_synth_brass_1, saw")
   .lpf(2000) // Clear, bright tone
