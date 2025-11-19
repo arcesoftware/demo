@@ -7,10 +7,10 @@
 GUITAR_RHYTHM: note("<e2 d2 c2 g2>@4")
   .struct("x*4")
   .sustain(0.18) // Add back sustain for a short, punchy chord
-  .sound("saw")
-  .distort(0.4) // Light drive for rock texture
+  .sound("pulse")
+  .distort(0.314515) // Light drive for rock texture
   .lpf(1800)
-  .gain(0.618033)
+  .gain(1.618033)
   .loopAt(4)
 
 // --- 🎹 LEAD SYNTH (Iconic Riff - Clearer Tone) ---
