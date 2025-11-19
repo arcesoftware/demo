@@ -1,0 +1,41 @@
+ ==================================
+// 🎚️ Rock Band Arrangement (Clean Mix)
+// ==================================
+
+// --- 🎸 RHYTHM GUITAR (Power Chords - Lighter Drive) ---
+// Reduced distortion and gain for clarity.
+GUITAR_RHYTHM: note("<e2 d2 c2 g2>@4")
+  .struct("x*4")
+  .gain(0.8) // Reduced gain
+  .loopAt(4)
+
+// --- 🎹 LEAD SYNTH (Iconic Riff - Clearer Tone) ---
+// Reduced overall gain and delay to let the riff sit cleanly on top.
+LEAD: note("e4@8 g4@8 f4@8 e4@8 c4@8 d4@8 e4@8")
+  .sustain(0.25)
+  .sound("gm_synth_brass_1, saw")
+  .vibrato(0.01, 5)
+  .gain(0.0618033) // Reduced gain substantially (was 1.8)
+  .loopAt(8)
+
+// --- 🥁 DRUMS (Rock Beat - Punchier, less overpowering) ---
+// Lowering the gain ensures the drums provide rhythm without dominating.
+DRUMS: s("bd(2,4) ch sn ch(2,4) ")
+  .bank("akailinn")
+  .gain(0.31415) // Reduced gain (was 0.8)
+  .loopAt(1)
+
+// --- 🎧 BASSLINE (Synth Bass - Solid and Clean) ---
+// Kept relatively simple and low in the mix to avoid crowding.
+BASSLINE: note("e2@2 c3@2")
+  .sound("fm, tri")
+  .gain(1.618033)
+  .loopAt(1)
+
+// --- 🌌 PAD (Sustained Atmosphere - Subtler) ---
+// Reduced the room and gain to make this a background element.
+PAD: note("e3@4 g3@4 c4@4 g3@4")
+  .struct("x*4")
+  .sound("gm_fx_soundtrack")
+  .gain(0.618033) // Reduced gain (was 0.6)
+  .loopAt(4)
