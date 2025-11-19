@@ -27,8 +27,6 @@ LEAD: note("e4@8 g4@8 f4@8 e4@8 c4@8 d4@8 e4@8")
   .gain(0.818033) // <--- RECOMMENDED: Set to 0.8 to make it the clear melody
   .loopAt(8)
 
-
-
 // --- 🎧 BASSLINE (Classic British Rock Bass) ---
 // A tight, rhythmic pattern that walks between the chord tones,
 // inspired by bands like The Who or Led Zeppelin.
@@ -60,4 +58,12 @@ DRUMS: s("bd(1,3) bd(2,4) sn bd bd sn")
   .delay(0.01)
   .room(0.05)
   .gain(0.718033)
+  .loopAt(1)
+
+
+// --- 🎧 HIHAT (Driving 16th Notes) ---
+// New layer for a constant 16th-note (quarter-note triplet equivalent) hi-hat.
+HIHAT: s("ch ch ch ch ch ch ch oh ch ch ch ch ch ch oh ch") // 'ch' (closed hi-hat) playing 16 times in one measure
+  .bank("alesishr16") // Use the same bank for cohesion
+  .gain(0.0217) // Keep the gain low so it drives the rhythm without dominating
   .loopAt(1)
